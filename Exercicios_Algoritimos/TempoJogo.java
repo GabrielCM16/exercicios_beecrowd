@@ -16,12 +16,7 @@ public class TempoJogo {
     }
 
     public static void mostrarTempoJogo(int hora_inicio, int hora_fim, int minuto_inicio, int minuto_fim) {
-        int total = ((hora_fim * 60) + minuto_fim) - ((hora_inicio * 60) + minuto_inicio);
-
-        if (total < 0 ){
-            int temp = (23*60) - total;
-            total = temp;
-        }
+        int total = ((hora_fim * 60) + minuto_fim - (hora_inicio * 60) - minuto_inicio + (24 * 60)) % (24 * 60);
 
         int hora_total = total / 60;
         int minuto_total = total % 60;
