@@ -70,3 +70,32 @@ int keypress(void) {
 
     return 0; // Nenhuma tecla pressionada
 }
+
+void process_input() {
+    char ch;
+    if (keypress()) {
+        ch = getchar();
+        if (ch == '\033') { // setinhas
+            getchar();      // Ignora o '['
+            ch = getchar(); 
+            switch (ch) {
+                case 'A': // Seta para cima
+                    printf("Seta para cima pressionada!\n");
+                    break;
+                case 'B': // Seta para baixo
+                    printf("Seta para baixo pressionada!\n");
+                    break;
+                case 'C': // Seta para a direita
+                    printf("Seta para a direita pressionada!\n");
+                    break;
+                case 'D': // Seta para a esquerda
+                    printf("Seta para a esquerda pressionada!\n");
+                    break;
+                default:
+                    printf("Tecla desconhecida pressionada!\n");
+            }
+        } else {
+            printf("Tecla pressionada: %c\n", ch);
+        }
+    }
+}

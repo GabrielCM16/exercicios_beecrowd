@@ -20,3 +20,5 @@ char getch();
 
 //verifica se foi pressionada uma tecla
 int keypress(void);
+
+void process_input();
