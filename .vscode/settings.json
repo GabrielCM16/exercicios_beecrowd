@@ -2,6 +2,8 @@
     "files.associations": {
         "string.h": "c",
         "type_traits": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "tabuleiro.h": "c",
+        "stdlib.h": "c"
     }
 }
