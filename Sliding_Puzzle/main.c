@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "utils.h"
 #include "menu.h"
 
@@ -8,6 +9,7 @@
 
 // Função para desenhar bordas e números com alinhamento correto
 void printsqr(int x1, int y1, int linhas, int colunas, int **numeros) {
+    printf("Use as setinhas para mover\nUse Ctrl+C para sair.\n");
     int cell_width = 4; // Largura de cada célula (número + espaçamento)
     int cell_height = 3; // Altura de cada célula (considerando linha superior, número e linha inferior)
 
@@ -87,9 +89,9 @@ void liberar_matriz(int **matriz, int linhas) {
 }
 
 // Função para trocar o número na posição (x, y) com o número vazio (0)
-void trocar_com_vazio(int **matriz, int *pos_vazio_x, int *pos_vazio_y, int x, int y) {
+void trocar_com_vazio(int **matriz, int *pos_vazio_x, int *pos_vazio_y, int x, int y, int linhas, int colunas) {
     // Verifica se a posição (x, y) está dentro dos limites da matriz
-    if (x < 0 || y < 0 || x >= sizeof(matriz) || y >= sizeof(matriz[0])) {
+    if (x < 0 || y < 0 || x >= linhas || y >= colunas) {
         printf("Posição inválida para a troca.\n");
         return;
     }
@@ -102,6 +104,65 @@ void trocar_com_vazio(int **matriz, int *pos_vazio_x, int *pos_vazio_y, int x, i
     // Atualiza a posição do vazio
     *pos_vazio_x = x;
     *pos_vazio_y = y;
+}
+
+int **sortearMatriz(int **matriz, int linhas, int colunas, int *pos_vazio_x, int *pos_vazio_y, int X) {
+    // Cria uma nova matriz para armazenar o tabuleiro sorteado
+    int **nova_matriz = malloc(linhas * sizeof(int *));
+    for (int i = 0; i < linhas; i++) {
+        nova_matriz[i] = malloc(colunas * sizeof(int));
+    }
+
+    // Copia os valores da matriz original para a nova matriz
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            nova_matriz[i][j] = matriz[i][j];
+        }
+    }
+
+    // Sorteia as posições das peças na nova matriz, mas apenas nas direções válidas
+    for (int i = 0; i < X; i++) { // Executa X vezes para tentar sortear uma solução
+        int direcao = rand() % 4;  // Sorteia uma direção aleatória
+
+        // Realiza a troca com a célula vazia nas direções válidas
+        switch (direcao) {
+            case 0: // Cima
+                if (*pos_vazio_x > 0) { // Verifica se a troca é válida
+                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x - 1, *pos_vazio_y, linhas, colunas);
+                }
+                break;
+            case 1: // Baixo
+                if (*pos_vazio_x < linhas - 1) { // Verifica se a troca é válida
+                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x + 1, *pos_vazio_y, linhas, colunas);
+                }
+                break;
+            case 2: // Esquerda
+                if (*pos_vazio_y > 0) { // Verifica se a troca é válida
+                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x, *pos_vazio_y - 1, linhas, colunas);
+                }
+                break;
+            case 3: // Direita
+                if (*pos_vazio_y < colunas - 1) { // Verifica se a troca é válida
+                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x, *pos_vazio_y + 1, linhas, colunas);
+                }
+                break;
+        }
+    }
+
+    // Retorna a nova matriz embaralhada
+    return nova_matriz;
+}
+
+
+int verificar_se_ordenada(int **matriz, int **matriz_ordenada, int linhas, int colunas) {
+    for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
+            if (matriz[i][j] != matriz_ordenada[i][j]) {
+                return 0;  // Retorna 0 se a matriz não estiver ordenada
+            }
+        }
+    }
+    return 1;  // Retorna 1 se a matriz estiver ordenada
 }
 
 
@@ -120,18 +181,22 @@ int main() {
 
     // Mostra o menu e obtém a escolha
     int escolha = mostrar_menu_interativo(opcoes, n, titulo);
+    int X = 0;
 
     // Determina o tamanho do tabuleiro com base na escolha
     int linhas, colunas;
     switch (escolha) {
     case 0:
         linhas = colunas = 3;
+        X = 20;
         break;
     case 1:
         linhas = colunas = 4;
+        X = 10;
         break;
     case 2:
         linhas = colunas = 5;
+        X = 15;
         break;
     case 3:
         printf("Digite o tamanho do tabuleiro (N): ");
@@ -149,23 +214,50 @@ int main() {
     int pos_vazio_x = 0, pos_vazio_y = 0;
 
     // Gera matriz ordenada com o número vazio na última posição
-    int **matriz = gerar_matriz_ordenada(linhas, colunas, &pos_vazio_x, &pos_vazio_y);
+    int **matriz_ordenada = gerar_matriz_ordenada(linhas, colunas, &pos_vazio_x, &pos_vazio_y);
+
+    // Sorteia o tabuleiro
+    int **tabuleiro = sortearMatriz(matriz_ordenada, linhas, colunas, &pos_vazio_x, &pos_vazio_y, X);
+
 
     // Desenha o tabuleiro
-    printsqr(2, 2, linhas, colunas, matriz);
+    printsqr(3, 3, linhas, colunas, tabuleiro);
 
-    trocar_com_vazio(matriz, &pos_vazio_x, &pos_vazio_y, pos_vazio_x , pos_vazio_y-1);
 
-    printsqr(2, 2, linhas, colunas, matriz);
-
-    // Libera memória da matriz
-    liberar_matriz(matriz, linhas);
 
     while (1) {
-        process_input();
-    
+        char ch = process_input();
+        if (ch != 0) {
+            switch (ch) {
+                case 'A': // Seta para cima
+                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x - 1, pos_vazio_y, linhas, colunas);
+                    break;
+                case 'B': // Seta para baixo
+                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x + 1, pos_vazio_y, linhas, colunas);
+                    break;
+                case 'C': // Seta para a direita
+                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x, pos_vazio_y + 1, linhas, colunas);
+                    break;
+                case 'D': // Seta para a esquerda
+                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x, pos_vazio_y - 1, linhas, colunas);
+                    break;
+                default:
+                    printf("Tecla não reconhecida: %c\n", ch);
+                    break;
+            }
+
+            // Atualiza o tabuleiro após o movimento
+            clrscr(); // Limpa a tela
+            printsqr(3, 3, linhas, colunas, tabuleiro);
+
+            // Verifica se o tabuleiro está ordenado
+            if (verificar_se_ordenada(tabuleiro, matriz_ordenada, linhas, colunas)) {
+                printf("Parabéns! Você completou o tabuleiro!\n");
+                break;  // Sai do loop se o tabuleiro estiver ordenado
+            }
+
+        }
     }
 
-
-
+    return 0;
 }
