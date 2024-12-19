@@ -8,8 +8,8 @@
 #define BRANCO "\033[0;0;7m"
 
 // Função para desenhar bordas e números com alinhamento correto
-void printsqr(int x1, int y1, int linhas, int colunas, int **numeros) {
-    printf("Use as setinhas para mover\nUse Ctrl+C para sair.\n");
+void printsqr(int x1, int y1, int linhas, int colunas, int **numeros, int passos) {
+    printf("Use as setinhas para mover\nUse Ctrl+C para sair.\nPassos realizados: %d\n", passos);
     int cell_width = 4; // Largura de cada célula (número + espaçamento)
     int cell_height = 3; // Altura de cada célula (considerando linha superior, número e linha inferior)
 
@@ -162,6 +162,8 @@ int verificar_se_ordenada(int **matriz, int **matriz_ordenada, int linhas, int c
             }
         }
     }
+    liberar_matriz(matriz, linhas);
+    liberar_matriz(matriz_ordenada, linhas);
     return 1;  // Retorna 1 se a matriz estiver ordenada
 }
 
@@ -188,15 +190,15 @@ int main() {
     switch (escolha) {
     case 0:
         linhas = colunas = 3;
-        X = 20;
+        X = 30;
         break;
     case 1:
         linhas = colunas = 4;
-        X = 10;
+        X = 25;
         break;
     case 2:
         linhas = colunas = 5;
-        X = 15;
+        X = 18;
         break;
     case 3:
         printf("Digite o tamanho do tabuleiro (N): ");
@@ -219,15 +221,15 @@ int main() {
     // Sorteia o tabuleiro
     int **tabuleiro = sortearMatriz(matriz_ordenada, linhas, colunas, &pos_vazio_x, &pos_vazio_y, X);
 
+    int passos = 0;
 
     // Desenha o tabuleiro
-    printsqr(3, 3, linhas, colunas, tabuleiro);
-
-
+    printsqr(4, 4, linhas, colunas, tabuleiro, passos);
 
     while (1) {
         char ch = process_input();
         if (ch != 0) {
+            passos++;
             switch (ch) {
                 case 'A': // Seta para cima
                     trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x - 1, pos_vazio_y, linhas, colunas);
@@ -248,11 +250,11 @@ int main() {
 
             // Atualiza o tabuleiro após o movimento
             clrscr(); // Limpa a tela
-            printsqr(3, 3, linhas, colunas, tabuleiro);
+            printsqr(4, 4, linhas, colunas, tabuleiro, passos);
 
             // Verifica se o tabuleiro está ordenado
             if (verificar_se_ordenada(tabuleiro, matriz_ordenada, linhas, colunas)) {
-                printf("Parabéns! Você completou o tabuleiro!\n");
+                printf("Parabéns! Você completou o tabuleiro! Com %d passos ao total\n\n", passos);
                 break;  // Sai do loop se o tabuleiro estiver ordenado
             }
 
