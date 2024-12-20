@@ -1,4 +1,13 @@
-gcc -o sliding_puzzle main.c utils.c menu.c -Wall -lm
+Alunos
+Gabriel Costa de Moraes
+Pedro Moraes Michalski
 
+compilar: 
+```
+    gcc -o sliding_puzzle main.c tabuleiro.c utils.c menu.c -Wall -lm
+```
 
-./sliding_puzzle
+executar
+```
+    ./sliding_puzzle
+```

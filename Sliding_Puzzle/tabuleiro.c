@@ -51,7 +51,7 @@ void liberar_matriz(int **matriz, int linhas) {
 
 
 // Função para trocar o número na posição (x, y) com o número vazio (0)
-void trocar_com_vazio(int **matriz, int *pos_vazio_x, int *pos_vazio_y, int x, int y, int linhas, int colunas) {
+void trocar_com_vazio(int **matriz, int *pos_vazio_x, int *pos_vazio_y, int x, int y, int linhas, int colunas, int *passos) {
     // Verifica se a posição (x, y) está dentro dos limites da matriz
     if (x < 0 || y < 0 || x >= linhas || y >= colunas) {
         printf("Posição inválida para a troca.\n");
@@ -66,6 +66,9 @@ void trocar_com_vazio(int **matriz, int *pos_vazio_x, int *pos_vazio_y, int x, i
     // Atualiza a posição do vazio
     *pos_vazio_x = x;
     *pos_vazio_y = y;
+
+    // Incrementa o contador de passos
+    (*passos)++;
 }
 
 
@@ -84,6 +87,8 @@ int **sortearMatriz(int **matriz, int linhas, int colunas, int *pos_vazio_x, int
         }
     }
 
+    int passos = 0;
+
     // Sorteia as posições das peças na nova matriz, mas apenas nas direções válidas
     for (int i = 0; i < X; i++) { // Executa X vezes para tentar sortear uma solução
         int direcao = rand() % 4;  // Sorteia uma direção aleatória
@@ -92,22 +97,22 @@ int **sortearMatriz(int **matriz, int linhas, int colunas, int *pos_vazio_x, int
         switch (direcao) {
             case 0: // Cima
                 if (*pos_vazio_x > 0) { // Verifica se a troca é válida
-                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x - 1, *pos_vazio_y, linhas, colunas);
+                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x - 1, *pos_vazio_y, linhas, colunas, &passos);
                 }
                 break;
             case 1: // Baixo
                 if (*pos_vazio_x < linhas - 1) { // Verifica se a troca é válida
-                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x + 1, *pos_vazio_y, linhas, colunas);
+                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x + 1, *pos_vazio_y, linhas, colunas, &passos);
                 }
                 break;
             case 2: // Esquerda
                 if (*pos_vazio_y > 0) { // Verifica se a troca é válida
-                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x, *pos_vazio_y - 1, linhas, colunas);
+                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x, *pos_vazio_y - 1, linhas, colunas, &passos);
                 }
                 break;
             case 3: // Direita
                 if (*pos_vazio_y < colunas - 1) { // Verifica se a troca é válida
-                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x, *pos_vazio_y + 1, linhas, colunas);
+                    trocar_com_vazio(nova_matriz, pos_vazio_x, pos_vazio_y, *pos_vazio_x, *pos_vazio_y + 1, linhas, colunas, &passos);
                 }
                 break;
         }

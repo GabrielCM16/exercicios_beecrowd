@@ -11,12 +11,12 @@ int main() {
     clrscr(); // Limpa o terminal
 
     // Configuração do menu
-    const char *titulo = "Bem Vindo ao Sliding Puzzle\n Gabriel Costa de Moraes\n Use Ctrl+C para sair.\n";
+    const char *titulo = "Bem Vindo ao Sliding Puzzle\n Gabriel Costa de Moraes\n Pedro Moraes Michalski\n Use Ctrl+C para sair.\n";
     const char *opcoes[] = {
         "Fácil (3x3)",
         "Médio (4x4)",
         "Difícil (5x5)",
-        "Personalizado (NxN)"};
+        "Personalizado (NxM)"};
     int n = sizeof(opcoes) / sizeof(opcoes[0]);
 
     // Mostra o menu e obtém a escolha
@@ -28,20 +28,29 @@ int main() {
     switch (escolha) {
     case 0:
         linhas = colunas = 3;
-        X = 30;
+        X = 35;
         break;
     case 1:
         linhas = colunas = 4;
-        X = 25;
+        X = 4*15;
         break;
     case 2:
         linhas = colunas = 5;
-        X = 18;
+        X = 5*20;
         break;
     case 3:
         printf("Digite o tamanho do tabuleiro (N): ");
         scanf("%d", &linhas);
-        colunas = linhas;
+        printf("Digite o tamanho do tabuleiro (M): ");
+        scanf("%d", &colunas);
+        if(linhas >= colunas){
+            int dif = linhas - colunas;
+            X = (colunas + dif)*18;
+        }else{
+            int dif = colunas-linhas;
+            X = (linhas + dif)*18;
+        }
+
         break;
     default:
         printf("Opção inválida!\n");
@@ -67,19 +76,22 @@ int main() {
     while (1) {
         char ch = process_input();
         if (ch != 0) {
-            passos++;
             switch (ch) {
                 case 'A': // Seta para cima
-                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x - 1, pos_vazio_y, linhas, colunas);
+                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x - 1, pos_vazio_y, linhas, colunas, &passos);
+                    
                     break;
                 case 'B': // Seta para baixo
-                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x + 1, pos_vazio_y, linhas, colunas);
+                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x + 1, pos_vazio_y, linhas, colunas, &passos);
+                    
                     break;
                 case 'C': // Seta para a direita
-                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x, pos_vazio_y + 1, linhas, colunas);
+                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x, pos_vazio_y + 1, linhas, colunas, &passos);
+                    
                     break;
                 case 'D': // Seta para a esquerda
-                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x, pos_vazio_y - 1, linhas, colunas);
+                    trocar_com_vazio(tabuleiro, &pos_vazio_x, &pos_vazio_y, pos_vazio_x, pos_vazio_y - 1, linhas, colunas, &passos);
+                    
                     break;
                 default:
                     printf("Tecla não reconhecida: %c\n", ch);
@@ -101,3 +113,5 @@ int main() {
 
     return 0;
 }
+
+
