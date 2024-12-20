@@ -65,6 +65,15 @@ int main() {
     // Gera matriz ordenada com o número vazio na última posição
     int **matriz_ordenada = gerar_matriz_ordenada(linhas, colunas, &pos_vazio_x, &pos_vazio_y);
 
+    printInicial(4, 4, linhas, colunas, matriz_ordenada);
+    while (1) {
+        char ch = process_input();
+        if (ch != 0) {
+            break;
+        }
+    }
+    clrscr();
+
     // Sorteia o tabuleiro
     int **tabuleiro = sortearMatriz(matriz_ordenada, linhas, colunas, &pos_vazio_x, &pos_vazio_y, X);
 

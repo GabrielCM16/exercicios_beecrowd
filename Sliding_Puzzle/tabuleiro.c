@@ -182,3 +182,49 @@ void printsqr(int x1, int y1, int linhas, int colunas, int **numeros, int passos
     printf("+");
     printf("\n");
 }
+
+
+
+void printInicial(int x1, int y1, int linhas, int colunas, int **numeros) {
+    printf("Tabuleiro Inicial:\nOrganize os números para retornar a este modelo.\nAperte qualquer tecla para continuar.");
+    int cell_width = 4; // Largura de cada célula (número + espaçamento)
+    int cell_height = 3; // Altura de cada célula (considerando linha superior, número e linha inferior)
+
+    // Desenha as bordas horizontais (superior e inferior)
+    gotoxy(x1, y1);
+    printf("+");
+    for (int i = 0; i < colunas * cell_width; i++) {
+        printf("-");
+    }
+    printf("+");
+
+    for (int lin = 0; lin < linhas; lin++) {
+        // Desenha as bordas verticais e preenche os números
+        for (int h = 0; h < cell_height; h++) {
+            gotoxy(x1, y1 + 1 + lin * cell_height + h);
+            printf("|");
+            if (h == 1) { // Linha central onde os números aparecem
+                for (int col = 0; col < colunas; col++) {
+                    int num_x = x1 + 2 + col * cell_width; // Posição horizontal do número
+                    gotoxy(num_x, y1 + 1 + lin * cell_height + h);
+                    if (numeros[lin][col] != 0) {
+                        printf("%2d", numeros[lin][col]); // Imprime o número
+                    } else {
+                        printf(BRANCO "  " NORMAL);// Espaço vazio para células vazias
+                    }
+                }
+            }
+            gotoxy(x1 + 1 + colunas * cell_width, y1 + 1 + lin * cell_height + h);
+            printf("|");
+        }
+    }
+
+    // Desenha a borda inferior
+    gotoxy(x1, y1 + linhas * cell_height);
+    printf("+");
+    for (int i = 0; i < colunas * cell_width; i++) {
+        printf("-");
+    }
+    printf("+");
+    printf("\n");
+}
