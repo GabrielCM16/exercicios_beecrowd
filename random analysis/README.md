@@ -13,7 +13,5 @@ Este repositório contém um pequeno estudo para explorar a aleatoriedade da som
   - `random`: Para a geração de números aleatórios.  
   - `matplotlib`: Para visualização gráfica dos resultados.  
 
-## 📂 Estrutura do Repositório  
-- `random_sum_analysis.py`: Código principal para gerar números aleatórios, calcular a soma e visualizar a distribuição.  
-- `README.md`: Este arquivo explicativo.  
+
 
